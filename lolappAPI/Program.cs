@@ -25,7 +25,8 @@ builder.Services.Configure<MongoDbSettings>(config.GetSection("MongoDbSettings")
 builder.Services.AddSingleton<IMongoDbSettings>(serviceProvider =>
     serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
-builder.Services.AddScoped(typeof(IDataAccessRepository<>), typeof(DataAccessRepository<>));
+//builder.Services.AddScoped(typeof(IDataAccessRepository<>), typeof(DataAccessRepository<>));
+builder.Services.AddScoped(typeof(ISummonerRepository), typeof(SummonerRepository));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

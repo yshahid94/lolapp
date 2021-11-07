@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using lolappAPI.Types;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace lolappAPI.Repository.Tests
 {
@@ -53,14 +55,14 @@ namespace lolappAPI.Repository.Tests
         [TestMethod("Find Row")]
         public void FindRows()
         {
-            DataAccessRepository<User> dar = new DataAccessRepository<User>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
             //Create document
-            var reqUser = new User() { Username = "testUser", Rank = "gold" };
+            var reqUser = new Summoner() { Name = "testUser", SummonerLevel = 123 };
             //Insert
             dar.InsertOne(reqUser);
             //Find it
-            User resUser = dar.FindOne(filter => filter.Username == "testUser" && filter.Id == reqUser.Id);
+            Summoner resUser = dar.FindOne(filter => filter.Name == "testUser" && filter.Id == reqUser.Id);
             //Asserts
             Assert.IsTrue(resUser.Id == reqUser.Id);
             //Clean up
@@ -70,14 +72,14 @@ namespace lolappAPI.Repository.Tests
         [TestMethod("Insert Row")]
         public void InsertRows()
         {
-           DataAccessRepository<User> dar = new DataAccessRepository<User>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+           DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
             //Create document
-            var reqUser = new User() { Username = "testUser", Rank = "gold" };
+            var reqUser = new Summoner() { Name = "testUser", SummonerLevel = 123 };
             //Insert
             dar.InsertOne(reqUser);
             //Find it
-            User resUser = dar.FindOne(filter => filter.Username == "testUser" && filter.Id == reqUser.Id);
+            Summoner resUser = dar.FindOne(filter => filter.Name == "testUser" && filter.Id == reqUser.Id);
             //Asserts
             Assert.IsTrue(resUser.Id == reqUser.Id);
             //Clean up
@@ -87,22 +89,23 @@ namespace lolappAPI.Repository.Tests
         [TestMethod("Update Row")]
         public void UpdateRows()
         {
-            DataAccessRepository<User> dar = new DataAccessRepository<User>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
-            var PLAT = "plat";
-
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+            
             //Create document
-            var reqUser = new User() { Username = "testUser", Rank = "gold" };
+            var reqUser = new Summoner() { Name = "testUser", SummonerLevel = 123 };
             //Insert
             dar.InsertOne(reqUser);
             //Update
-            reqUser.Rank = PLAT;
+            reqUser.SummonerLevel = 321;
             dar.ReplaceOne(reqUser);
             //Find it
-            User resUser = dar.FindOne(filter => filter.Rank == PLAT && filter.Id == reqUser.Id);
+            Summoner resUser = dar.FindOne(filter => filter.SummonerLevel == 321 && filter.Id == reqUser.Id);
             //Asserts
-            Assert.IsTrue(resUser.Id == reqUser.Id && resUser.Rank == PLAT);
+            Assert.IsTrue(resUser.Id == reqUser.Id && resUser.SummonerLevel == 321);
             //Clean up
             dar.DeleteById(resUser.Id);
         }
+
+        
     }
 }
