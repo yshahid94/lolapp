@@ -19,32 +19,10 @@ namespace lolappAPI.Repository
         public override object DeserialiseError(string response, string errorMessage)
         {
             var obj = response;
-            //var obj = new Zen_InboundMessage();
-
-            //if (response.Contains("Availability has expired"))
-            //{
-            //    obj = DeserializeJSON<ZenError_InboundMessage>(response);
-            //}
-            //else if (response.Contains("Could not find availability details"))
-            //{
-            //    obj = DeserializeJSON<ZenError_InboundMessage>(response);
-            //}
-            //else
-            //{
-            //    obj = new ZenError_InboundMessage()
-            //    {
-            //        errors = new List<ZenError>() { new ZenError() { message = response } }.ToArray()
-            //    };
-            //}
 
             return obj;
         }
 
-        /// <summary>
-        /// Create a POST request to Zen
-        /// </summary>
-        /// <param name="request">The request</param>
-        /// <returns></returns>
         public T Post<T>(object request, string orderURL, string urlBase, Type responseType)
         {
             OrderURL = orderURL;
@@ -58,13 +36,6 @@ namespace lolappAPI.Repository
             return Post<T>(request);
         }
 
-        /// <summary>
-        /// Create a GET request to Zen
-        /// </summary>
-        /// <param name="parameters">The parameters to append onto the query string</param>
-        /// <param name="orderURL">The order's URL</param>
-        /// <param name="responseType">The type into which the successful response will deserialise. This will be used in DeserialiseResponse.</param>
-        /// <returns></returns>
         public T Get<T>(string parameters, string orderURL, string urlBase, Type messageType)
         {
             OrderURL = orderURL;
@@ -85,6 +56,10 @@ namespace lolappAPI.Repository
             {
                 deserialisedObject = DeserializeJSON<GetSummonerInboundMessage>(response);
             }
+            else if (ResponseType.FullName == typeof(GetLeagueBySummonerInboundMessage).FullName)
+            {
+                deserialisedObject = DeserializeJSON<GetLeagueBySummonerInboundMessage>(response);
+            }
             return deserialisedObject;
         }
         public static RiotInboundMessage SendMessage(RiotOutboundMessage message, RiotRestAPI restAPI)
@@ -97,8 +72,8 @@ namespace lolappAPI.Repository
             }
             else if (message.MessageType == RiotOutboundMessage.MessageType_Enum.POST)
             {
-                string zenRequestJSON = JsonConvert.SerializeObject(message.Body);
-                response = restAPI.Post<RiotInboundMessage>(zenRequestJSON, message.OrderURL, message.URLBase, message.ResponseType);
+                string riotRequestJSON = JsonConvert.SerializeObject(message.Body);
+                response = restAPI.Post<RiotInboundMessage>(riotRequestJSON, message.OrderURL, message.URLBase, message.ResponseType);
             }
 
             return response;

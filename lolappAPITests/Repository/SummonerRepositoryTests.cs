@@ -43,7 +43,7 @@ namespace lolappAPI.Repository.Tests
         public void GetSummonerAndUpdateIfNeededTest()
         {
             SummonerRepository repository = new SummonerRepository(_config);
-            repository.GetSummonerAndUpdateIfNeeded("Kyrael");
+            Summoner summoner = repository.GetSummonerAndUpdateIfNeeded("Kyrael");
             Assert.Fail();
         }
     }

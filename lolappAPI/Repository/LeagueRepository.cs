@@ -24,14 +24,14 @@ namespace lolappAPI.Repository
 
             List<League> leagues = new List<League>();
 
-            foreach (var respLeague in response.leagues)
+            foreach (var respLeague in response.array)
             {
                 League league = new League();
 
                 league.LeagueID = respLeague.LeagueID;
                 league.QueueType = QueueTypeStringToEnum(respLeague.QueueType);
                 league.Tier = TierStringToEnum(respLeague.Tier);
-                league.Rank = respLeague.Rank;
+                league.Rank = RankStringToEnum(respLeague.Rank);
                 league.SummonerID = respLeague.SummonerID;
                 league.SummonerName = respLeague.SummonerName;
                 league.LeaguePoints = respLeague.LeaguePoints;
@@ -62,9 +62,9 @@ namespace lolappAPI.Repository
                     return Tier.Unknown;
             }
         }
-        private QueueType QueueTypeStringToEnum(string tier)
+        private QueueType QueueTypeStringToEnum(string queueType)
         {
-            switch (tier)
+            switch (queueType)
             {
                 case "RANKED_SOLO_5X5":
                     return QueueType.Ranked_Solo_5x5;
@@ -74,22 +74,21 @@ namespace lolappAPI.Repository
                     return QueueType.Unknown;
             }
         }
-
-
-        //public enum QueueType
-        //{
-        //    Ranked_Solo_5x5,
-        //    Ranked_Flex_SR,
-        //    Unknown
-        //}
-        //public enum Tier
-        //{
-        //    Iron,
-        //    Silver,
-        //    Gold,
-        //    Platinum,
-        //    Diamond,
-        //    Unknown
-        //}
+        private Rank RankStringToEnum(string rank)
+        {
+            switch (rank)
+            {
+                case "I":
+                    return Rank.I;
+                case "II":
+                    return Rank.II;
+                case "III":
+                    return Rank.III;
+                case "IV":
+                    return Rank.IV;
+                default:
+                    return Rank.Unknown;
+            }
+        }
     }
 }

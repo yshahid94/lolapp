@@ -8,5 +8,6 @@ namespace lolappAPI.Types.Interfaces
         public string Id { get; set; }
 
         DateTime CreatedAt { get; }
+        public DateTime UpdatedOn { get; set; }
     }
 }

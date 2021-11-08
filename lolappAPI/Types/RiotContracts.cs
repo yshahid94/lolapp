@@ -26,7 +26,7 @@ namespace lolappAPI.Types
             {
                 base.CreateMessage(
                     RiotOutboundMessage.MessageType_Enum.GET,
-                    typeof(GetSummonerInboundMessage),
+                    typeof(GetLeagueBySummonerInboundMessage),
                     RiotAPIURLBaseVersion.Old);
             }
         }
@@ -57,10 +57,10 @@ namespace lolappAPI.Types
         }
         public class GetLeagueBySummonerInboundMessage : RiotInboundMessage
         {
-            public List<RiotAPILeague> leagues { get; set; }
+            public List<RiotAPILeague> array { get; set; }
         }
         public class RiotAPILeague
-    {
+        {
             [JsonProperty("leagueId")]
             public string LeagueID { get; set; }
             [JsonProperty("queueType")]

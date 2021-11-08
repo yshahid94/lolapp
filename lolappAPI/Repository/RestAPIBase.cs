@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json.Nodes;
 
 namespace lolappAPI.Repository
 {
@@ -235,6 +236,14 @@ namespace lolappAPI.Repository
                     {
                         //Storing the response details recieved from web api
                         var rawResponse = Res.Content.ReadAsStringAsync().Result;
+                        Object item = JsonObject.Parse(rawResponse);
+                        //If response is an array then add it to an object with the property name "array"
+                        if (item.GetType().Name == "JsonArray")
+                        {
+                            JsonObject json = new JsonObject();
+                            json.Add(new KeyValuePair<string, JsonNode?>("array", (JsonArray)item));
+                            rawResponse = json.ToString();
+                        }
                         //Deserialize to object
                         response = (T)DeserialiseResponse(rawResponse);
                     }

@@ -96,12 +96,14 @@ namespace lolappAPI.Repository
         public void ReplaceOne(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+            document.UpdatedOn = DateTime.Now;
             _collection.FindOneAndReplace(filter, document);
         }
 
         public virtual async Task ReplaceOneAsync(TDocument document)
         {
             var filter = Builders<TDocument>.Filter.Eq(doc => doc.Id, document.Id);
+            document.UpdatedOn = DateTime.Now;
             await _collection.FindOneAndReplaceAsync(filter, document);
         }
 

@@ -11,7 +11,7 @@ namespace lolappAPI.Types
         public string Id { get; set; }
 
         [BsonElement("createdAt")]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; } = DateTime.Now;
         [BsonElement("updatedOn")]
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
         public bool Equals(Document doc)

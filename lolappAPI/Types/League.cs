@@ -19,7 +19,9 @@ namespace lolappAPI.Types
         [BsonRepresentation(BsonType.String)]
         public Tier Tier { get; set; }
         [BsonElement("rank")]
-        public string Rank { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        [BsonRepresentation(BsonType.String)]
+        public Rank Rank { get; set; }
         [BsonElement("summonerId")]
         public string SummonerID { get; set; }
         [BsonElement("summonerName")]
@@ -39,11 +41,19 @@ namespace lolappAPI.Types
     }
     public enum Tier
     {
-        Iron,
-        Silver,
-        Gold,
-        Platinum,
-        Diamond,
+        Iron = 1,
+        Silver = 2,
+        Gold = 3,
+        Platinum = 4,
+        Diamond = 5,
+        Unknown
+    }
+    public enum Rank
+    {
+        I = 1,
+        II = 2,
+        III = 3,
+        IV = 4,
         Unknown
     }
 }
