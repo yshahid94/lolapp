@@ -5,8 +5,8 @@ namespace lolappAPI.Types
     [BsonCollection("summoners")]
     public class Summoner : Document
     {
-        [BsonElement("userId")]
-        public string UserID { get; set; }
+        [BsonElement("summonerId")]
+        public string SummonerID { get; set; }
         [BsonElement("accountId")]
         public string AccountID { get; set; }
         [BsonElement("puuId")]

@@ -16,11 +16,13 @@ namespace lolappAPI.Repository
             };
         }
 
-        public override object DeserialiseError(string response, string errorMessage)
+        public override object DeserialiseError(string response, System.Net.HttpStatusCode httpStatusCode, string errorMessage)
         {
-            var obj = response;
+            RiotInboundMessage deserialisedObject = null;
 
-            return obj;
+            deserialisedObject = DeserializeJSON<ErrorMessage>(response);
+            ((ErrorMessage)deserialisedObject).Status.StatusCode = httpStatusCode;
+            return deserialisedObject;
         }
 
         public T Post<T>(object request, string orderURL, string urlBase, Type responseType)
@@ -31,7 +33,7 @@ namespace lolappAPI.Repository
             Template.URLBase = urlBase;
 
             //Need to generate token here
-            this.InsertHeader("X-Riot-Token", "RGAPI-fedc71a0-f211-4117-b97c-6d8c4398a68a");
+            this.InsertHeader("X-Riot-Token", "RGAPI-4f639ea2-311b-47e6-8e7b-b0c27937c6ea");
 
             return Post<T>(request);
         }
@@ -43,7 +45,7 @@ namespace lolappAPI.Repository
             Template.URLBase = urlBase;
 
             //Need to generate token here
-            this.InsertHeader("X-Riot-Token", "RGAPI-fedc71a0-f211-4117-b97c-6d8c4398a68a");
+            this.InsertHeader("X-Riot-Token", "RGAPI-4f639ea2-311b-47e6-8e7b-b0c27937c6ea");
 
             return Get<T>(parameters);
         }

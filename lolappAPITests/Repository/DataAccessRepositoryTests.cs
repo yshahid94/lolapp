@@ -18,8 +18,8 @@ namespace lolappAPI.Repository.Tests
     [TestClass()]
     public class DataAccessRepositoryTests
     {
-        private IConfiguration _config;
-        private IServiceCollection _services;
+        private IConfiguration _config = null;
+        private IServiceCollection _services = null;
 
         public DataAccessRepositoryTests()
         {
@@ -29,14 +29,6 @@ namespace lolappAPI.Repository.Tests
             _services.AddSingleton<IConfiguration>(Configuration);
 
         }
-        //[TestInitialize]
-        //public void SetUp()
-        //{
-        //    _services = new ServiceCollection();
-
-        //    _services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
-        //    _services.AddSingleton<IConfiguration>(Configuration);
-        //}
 
         public IConfiguration Configuration
         {
@@ -105,7 +97,24 @@ namespace lolappAPI.Repository.Tests
             //Clean up
             dar.DeleteById(resUser.Id);
         }
+        [TestMethod("Get All Rows")]
+        public void GetAllRows()
+        {
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
-        
+            //Create document
+            var req = new Summoner() { Name = "testUser", SummonerLevel = 123 };
+            //Insert
+            dar.InsertOne(req);
+            //Find all summoners
+            List<Summoner> resSummoners = dar.FilterBy(filter => true).ToList();
+            //Asserts
+            Assert.IsTrue(resSummoners.Count() > 0);
+            Assert.IsTrue(resSummoners.Any(x => x.Id == req.Id));
+            //Clean up
+            dar.DeleteById(req.Id);
+        }
+
+
     }
 }

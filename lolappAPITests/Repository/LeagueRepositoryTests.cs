@@ -42,7 +42,7 @@ namespace lolappAPI.Repository.Tests
         public void GetLeaguesByEncryptedSummonerIDTest()
         {
             LeagueRepository repository = new LeagueRepository(_config);
-            List<League> leagues = repository.GetLeaguesByEncryptedSummonerID("wvLyc4f7LWXtOkBg-6KFKhLNNbLMtuXkUufq6buVK-B6U6o");
+            List<League> leagues = repository.GetLeaguesByEncryptedSummonerIDFromRiotAndSaveToDB("wvLyc4f7LWXtOkBg-6KFKhLNNbLMtuXkUufq6buVK-B6U6o");
             Assert.Fail();
         }
     }

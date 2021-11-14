@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 namespace lolappAPI.Types
 {
     [BsonCollection("league")]
-    public class League
+    public class League : Document
     {
         [BsonElement("leagueId")]
         public string LeagueID { get; set; }

@@ -15,7 +15,7 @@ namespace lolappAPI.Repository.Interfaces
         RestAPIHelper.MessageType_Enum MessageType { get; set; }
 
         void Setup();
-        object DeserialiseError(string response, string errorMessage = "");
+        object DeserialiseError(string response, System.Net.HttpStatusCode httpStatusCode, string errorMessage = "");
         object DeserialiseResponse(string response);
     }
 }

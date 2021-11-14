@@ -31,7 +31,7 @@ namespace lolappAPI.Repository
         /// Deserialise the error response in whatever format the messages come in
         /// </summary>
         /// <returns></returns>
-        public abstract object DeserialiseError(string response, string errorMessage);
+        public abstract object DeserialiseError(string response, System.Net.HttpStatusCode httpStatusCode, string errorMessage);
 
         /// <summary>
         /// Deserialise the successful response in whatever format the messages come in
@@ -41,7 +41,6 @@ namespace lolappAPI.Repository
 
         /// <summary>
         /// This only refers to the end part of the URL, not the base address. 
-        /// E.g. https://api-test.gamma.co.uk/horizon-provisioning/v1/companies/{companyId} -> companies/{companyId}
         /// </summary>
         public string OrderURL { get; set; }
 
@@ -81,121 +80,6 @@ namespace lolappAPI.Repository
 
             T response = default(T);
 
-            ////Reset before new call
-            //Error = null;
-
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            //using (var client = new HttpClient())
-            //{
-            //    //Passing service base url
-            //    client.BaseAddress = new Uri(FullURL);
-            //    client.DefaultRequestHeaders.Clear();
-            //    //Define request data format
-            //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //    //Sending request to find web api REST service resource GetAllEmployees using HttpClient
-            //    HttpResponseMessage Res = await client.PostAsync("api/Employee/GetAllEmployees");
-            //    //Checking the response is successful or not which is sent using HttpClient
-            //    if (Res.IsSuccessStatusCode)
-            //    {
-            //        //Storing the response details recieved from web api
-            //        var EmpResponse = Res.Content.ReadAsStringAsync().Result;
-            //        //Deserializing the response recieved from web api and storing into the Employee list
-            //        //EmpInfo = JsonConvert.DeserializeObject<List<Employee>>(EmpResponse);
-            //    }
-            //}
-
-            //HttpWebRequest req = (HttpWebRequest)WebRequest.Create(FullURL);
-            //req.Method = "POST";
-            //req.ContentType = Template.ContentType;
-            //req.Proxy = null;
-
-            //if (Template.Headers != null && Template.Headers.Count > 0)
-            //{
-            //    foreach (KeyValuePair<string, string> header in Template.Headers)
-            //    {
-            //        req.Headers.Add(header.Key, header.Value);
-            //    }
-            //}
-
-            //try
-            //{
-            //    byte[] reqBytes;
-
-            //    //Get bytes for body object - Put in Method?
-            //    if (Template.ApplyJSONSerialisation)
-            //    {
-            //        //Using Newtonsoft serializer as Gamma uses special dynamic object that can be easily archived with Dictionary in Newtonsoft
-            //        //e.g. see MapInServiceOverride()
-            //        reqBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(request));
-            //    }
-            //    else
-            //    {
-            //        reqBytes = Encoding.UTF8.GetBytes(request.ToString());
-            //    }
-
-            //    //using (StreamWriter testWriter = new StreamWriter(@"E:\Documents (unmapped)\Development\Project work\Phoenix Progress\testRequest.txt"))
-            //    //{
-            //    //    testWriter.Write(Encoding.UTF8.GetString(reqBytes));
-            //    //    testWriter.Close();
-            //    //}
-
-            //    //Call REST service
-            //    using (StreamWriter reqWriter = new StreamWriter(req.GetRequestStream()))
-            //    {
-            //        reqWriter.Write(Encoding.UTF8.GetString(reqBytes));
-            //        reqWriter.Close();
-            //    }
-
-            //    // Get response
-            //    using (HttpWebResponse res = (HttpWebResponse)req.GetResponse())
-            //    {
-            //        // Pull raw response
-            //        using (StreamReader resReader = new StreamReader(res.GetResponseStream()))
-            //        {
-            //            RawResponse = resReader.ReadToEnd();
-            //            resReader.Close();
-            //        }
-            //        res.Close();
-            //    }
-
-            //    //Deserialise response
-            //    response = (T)DeserialiseResponse(RawResponse);
-            //}
-            //catch (WebException e)
-            //{
-            //    try
-            //    {
-            //        // Extract fail response
-            //        using (Stream errResponse = e.Response.GetResponseStream())
-            //        {
-            //            // Pull raw response
-            //            using (StreamReader errReader = new StreamReader(errResponse, Encoding.GetEncoding("utf-8")))
-            //            {
-            //                RawResponse = errReader.ReadToEnd();
-            //            }
-
-            //            Error = RawResponse;
-
-            //            try
-            //            {
-            //                response = (T)DeserialiseError(RawResponse, e.Message);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                var t = ex;
-            //            }
-            //        }
-            //    }
-            //    catch (Exception)
-            //    {
-            //        Error = e.Message;
-            //    }
-            //}
-
-            ////Reset the params to make sure that this is properly updated for the next call
-            //ResetParams();
-
             return response;
         }
 
@@ -232,10 +116,10 @@ namespace lolappAPI.Repository
                 Task.Run(async () => {
 
                     HttpResponseMessage Res = await client.GetAsync(OrderURL);
+                    //Storing the response details recieved from web api
+                    var rawResponse = Res.Content.ReadAsStringAsync().Result;
                     if (Res.IsSuccessStatusCode)
                     {
-                        //Storing the response details recieved from web api
-                        var rawResponse = Res.Content.ReadAsStringAsync().Result;
                         Object item = JsonObject.Parse(rawResponse);
                         //If response is an array then add it to an object with the property name "array"
                         if (item.GetType().Name == "JsonArray")
@@ -250,6 +134,7 @@ namespace lolappAPI.Repository
                     else
                     {
                         //Handle errors
+                        response = (T)DeserialiseError(rawResponse, Res.StatusCode, Res.ReasonPhrase);
                     }
 
                 }).GetAwaiter().GetResult();
@@ -264,7 +149,6 @@ namespace lolappAPI.Repository
         {
             T obj;
 
-            //Using Newtonsoft serializer as Gamma uses special dynamic object that can be easily archived with Dictionary in Newtonsoft
             //e.g. see MapInServiceOverride()
             obj = JsonConvert.DeserializeObject<T>(rawResponse);
 

@@ -43,7 +43,19 @@ namespace lolappAPI.Repository.Tests
         public void GetSummonerAndUpdateIfNeededTest()
         {
             SummonerRepository repository = new SummonerRepository(_config);
-            Summoner summoner = repository.GetSummonerAndUpdateIfNeeded("Kyrael");
+            string[] names = new string[] { "Yassin", "Kyrael", "Titan inos", "Kalliden1", "PrincessSparkles", "tomfizz", "Kungfoo", "Mangekyó" };
+            foreach (string name in names)
+            {
+                repository.GetSummonerAndUpdateIfNeeded(name);
+            }
+            Assert.Fail();
+        }
+
+        [TestMethod()]
+        public void UpdateAllSummonersLeaguesTest()
+        {
+            SummonerRepository repository = new SummonerRepository(_config);
+            List<SummonerLeagues> summonerLeagueList = repository.UpdateAllSummonersLeagues();
             Assert.Fail();
         }
     }
