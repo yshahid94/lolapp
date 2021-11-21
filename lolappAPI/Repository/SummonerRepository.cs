@@ -13,19 +13,19 @@ namespace lolappAPI.Repository
             _configuration = config;
             _leagueRepository = new LeagueRepository(config);
         }
-        public List<SummonerLeagues> GetAllSummonersLeagues()
+        public async Task<List<SummonerLeagues>> GetAllSummonersLeagues()
         {
             //Get all summoners from db
-            List<Summoner> allDBSummoners = GetAllSummonersFromDB();
+            List<Summoner> allDBSummoners = await GetAllSummonersFromDB();
             //Get updated leagues from Riot insert them to db and return them
             List<SummonerLeagues> summonerLeaguesList = allDBSummoners.Select(x => new SummonerLeagues() { Summoner = x, HistoricLeagues = _leagueRepository.GetLeaguesByEncryptedSummonerIDFromDB(x.SummonerID) }).ToList();
             
             return summonerLeaguesList;
         }
-        public List<SummonerLeagues> UpdateAllSummonersLeagues(bool returnHistoricLeagues = false)
+        public async Task<List<SummonerLeagues>> UpdateAllSummonersLeagues(bool returnHistoricLeagues = false)
         {
             //Get all summoners from db
-            List<Summoner> allDBSummoners = GetAllSummonersFromDB();
+            List<Summoner> allDBSummoners = await GetAllSummonersFromDB();
             //Get updated leagues from Riot insert them to db and return them
             List<SummonerLeagues> summonerLeaguesList = allDBSummoners.Select(x => new SummonerLeagues() { Summoner = x, HistoricLeagues = _leagueRepository.GetLeaguesByEncryptedSummonerIDFromRiotAndSaveToDB(x.SummonerID) }).ToList();
             if(returnHistoricLeagues)
@@ -35,7 +35,7 @@ namespace lolappAPI.Repository
             }
             return summonerLeaguesList;
         }
-        private Summoner GetSummonerByNameFromRiot(string name)
+        private async Task<Summoner> GetSummonerByNameFromRiot(string name)
         {
             List<RiotInboundMessage> responses = new List<RiotInboundMessage>();
 
@@ -66,31 +66,31 @@ namespace lolappAPI.Repository
             return summoner;
         }
 
-        private Summoner GetSummonerByNameFromDB(string name)
+        private async Task<Summoner> GetSummonerByNameFromDB(string name)
         {
             DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
-            Summoner summoner = dar.FindOne(filter => filter.Name == name);
+            Summoner summoner = await dar.FindOneAsync(filter => filter.Name == name);
 
             return summoner;
         }
-        private List<Summoner> GetAllSummonersFromDB()
+        private async Task<List<Summoner>> GetAllSummonersFromDB()
         {
             DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
-            List<Summoner> summoners = dar.FilterBy(filter => true).ToList();
+            IEnumerable<Summoner> summoners = await dar.FilterByAsync(filter => true);
 
-            return summoners;
+            return summoners.ToList();
         }
-        private Summoner InsertSummonerToDB(Summoner summoner)
+        private async Task<Summoner> InsertSummonerToDB(Summoner summoner)
         {
             DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
-            dar.InsertOne(summoner);
+            await dar.InsertOneAsync(summoner);
 
             return summoner;
         }
-        private Summoner UpdateDBSummoner(Summoner summoner)
+        private async Task<Summoner> UpdateDBSummoner(Summoner summoner)
         {
             DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
@@ -98,24 +98,24 @@ namespace lolappAPI.Repository
 
             return summoner;
         }
-        public Summoner GetSummonerAndUpdateIfNeeded(string name, bool forceUpdate = false)
+        public async Task<Summoner> GetSummonerAndUpdateIfNeeded(string name, bool forceUpdate = false)
         {
-            Summoner dbSummoner = GetSummonerByNameFromDB(name);
+            Summoner dbSummoner = await GetSummonerByNameFromDB(name);
 
             if(dbSummoner == null)
             {
-                Summoner riotSummoner = GetSummonerByNameFromRiot(name);
-                dbSummoner = InsertSummonerToDB(riotSummoner);
+                Summoner riotSummoner = await GetSummonerByNameFromRiot(name);
+                dbSummoner = await InsertSummonerToDB(riotSummoner);
             }
             //If last time updated was more than a day ago update
             else if(forceUpdate || dbSummoner.UpdatedOn < DateTime.Now.AddDays(-1))
             {
-                Summoner riotSummoner = GetSummonerByNameFromRiot(name);
+                Summoner riotSummoner = await GetSummonerByNameFromRiot(name);
                 dbSummoner.SummonerLevel = riotSummoner.SummonerLevel;
                 dbSummoner.RevisionDate = riotSummoner.RevisionDate;
                 dbSummoner.ProfileIconID = riotSummoner.ProfileIconID;
 
-                UpdateDBSummoner(dbSummoner);
+                await UpdateDBSummoner(dbSummoner);
             }
 
             return dbSummoner;

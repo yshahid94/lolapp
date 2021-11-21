@@ -7,7 +7,7 @@ namespace lolappAPI.Types.Interfaces
     {
         public string Id { get; set; }
 
-        DateTime CreatedAt { get; }
+        DateTime CreatedAt { get; set; }
         public DateTime UpdatedOn { get; set; }
     }
 }

@@ -7,7 +7,7 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "lolapp", "LoLApp\lolapp.esp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lolappAPI", "lolappAPI\lolappAPI.csproj", "{E7ADC9E8-D9C5-41DD-836C-9C121C798E3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lolappAPITests", "lolappAPITests\lolappAPITests.csproj", "{E7B73DC3-71FB-4A31-BDC4-379486AF9F43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lolappAPITests", "lolappAPITests\lolappAPITests.csproj", "{E7B73DC3-71FB-4A31-BDC4-379486AF9F43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

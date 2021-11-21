@@ -1,6 +1,7 @@
 ﻿using lolappAPI.Repository.Interfaces;
 using lolappAPI.Types;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace lolappAPI.Controllers
 {
@@ -16,9 +17,10 @@ namespace lolappAPI.Controllers
         }
 
         [HttpGet("getSummoner")]
-        public Summoner GetSummoner(string username)
+        public async Task<ApiResponse<Summoner>> GetSummoner(string username)
         {
-            return _summonerRepository.GetSummonerAndUpdateIfNeeded(username);
+            var response = await _summonerRepository.GetSummonerAndUpdateIfNeeded(username);
+            return new ApiResponse<Summoner>((int)HttpStatusCode.OK, "Success", 1, response);
         }
 
         //[HttpGet("getPeopleData")]

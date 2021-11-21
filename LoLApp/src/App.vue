@@ -7,7 +7,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import LeagueGraphView from "@/components/"
+    import LeagueGraphView from "@/components/LeagueGraphView.vue"
 
     export default Vue.extend({
       name: 'App',

@@ -33,7 +33,7 @@ namespace lolappAPI.Repository
             Template.URLBase = urlBase;
 
             //Need to generate token here
-            this.InsertHeader("X-Riot-Token", "RGAPI-4f639ea2-311b-47e6-8e7b-b0c27937c6ea");
+            this.InsertHeader("X-Riot-Token", "RGAPI-0a96ec56-c852-45f9-a83d-e420b3bf0ae4");
 
             return Post<T>(request);
         }
@@ -45,7 +45,7 @@ namespace lolappAPI.Repository
             Template.URLBase = urlBase;
 
             //Need to generate token here
-            this.InsertHeader("X-Riot-Token", "RGAPI-4f639ea2-311b-47e6-8e7b-b0c27937c6ea");
+            this.InsertHeader("X-Riot-Token", "RGAPI-0a96ec56-c852-45f9-a83d-e420b3bf0ae4");
 
             return Get<T>(parameters);
         }

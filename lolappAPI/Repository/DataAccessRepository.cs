@@ -37,6 +37,12 @@ namespace lolappAPI.Repository
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
+        public virtual Task<IEnumerable<TDocument>> FilterByAsync(
+            Expression<Func<TDocument, bool>> filterExpression)
+        {
+            return Task.Run(() => _collection.Find(filterExpression).ToEnumerable());
+        }
+
         public virtual IEnumerable<TProjected> FilterBy<TProjected>(
             Expression<Func<TDocument, bool>> filterExpression,
             Expression<Func<TDocument, TProjected>> projectionExpression)
@@ -74,22 +80,32 @@ namespace lolappAPI.Repository
 
         public virtual void InsertOne(TDocument document)
         {
+            document.CreatedAt = DateTime.Now;
             _collection.InsertOne(document);
         }
 
         public virtual Task InsertOneAsync(TDocument document)
         {
+            document.CreatedAt = DateTime.Now;
             return Task.Run(() => _collection.InsertOneAsync(document));
         }
 
         public void InsertMany(ICollection<TDocument> documents)
         {
+            documents = documents.Select(document => {
+                document.CreatedAt = DateTime.Now;
+                return document; 
+            }).ToList();
             _collection.InsertMany(documents);
         }
 
 
         public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
         {
+            documents = documents.Select(document => {
+                document.CreatedAt = DateTime.Now;
+                return document;
+            }).ToList();
             await _collection.InsertManyAsync(documents);
         }
 
