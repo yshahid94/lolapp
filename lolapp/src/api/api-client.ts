@@ -85,11 +85,227 @@ export class Client extends ApiClientBase {
         }
         return Promise.resolve<SummonerApiResponse>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    getAllSummoners(): Promise<SummonerListApiResponse> {
+        let url_ = this.baseUrl + "/Summoner/getAllSummoners";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetAllSummoners(_response);
+        });
+    }
+
+    protected processGetAllSummoners(response: Response): Promise<SummonerListApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SummonerListApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SummonerListApiResponse>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllSummonersLeagues(): Promise<SummonerLeaguesListApiResponse> {
+        let url_ = this.baseUrl + "/Summoner/getAllSummonersLeagues";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetAllSummonersLeagues(_response);
+        });
+    }
+
+    protected processGetAllSummonersLeagues(response: Response): Promise<SummonerLeaguesListApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SummonerLeaguesListApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SummonerLeaguesListApiResponse>(<any>null);
+    }
+
+    /**
+     * @param returnHistoricLeagues (optional) 
+     * @return Success
+     */
+    updateAllSummonersLeagues(returnHistoricLeagues: boolean | undefined): Promise<SummonerLeaguesListApiResponse> {
+        let url_ = this.baseUrl + "/Summoner/updateAllSummonersLeagues?";
+        if (returnHistoricLeagues === null)
+            throw new Error("The parameter 'returnHistoricLeagues' cannot be null.");
+        else if (returnHistoricLeagues !== undefined)
+            url_ += "returnHistoricLeagues=" + encodeURIComponent("" + returnHistoricLeagues) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdateAllSummonersLeagues(_response);
+        });
+    }
+
+    protected processUpdateAllSummonersLeagues(response: Response): Promise<SummonerLeaguesListApiResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SummonerLeaguesListApiResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SummonerLeaguesListApiResponse>(<any>null);
+    }
+}
+
+export class League implements ILeague {
+    id?: string | undefined;
+    createdAt?: Date;
+    updatedOn?: Date;
+    leagueID?: string | undefined;
+    queueType?: QueueType;
+    tier?: Tier;
+    rank?: Rank;
+    summonerID?: string | undefined;
+    summonerName?: string | undefined;
+    leaguePoints?: number;
+    wins?: number;
+    losses?: number;
+
+    constructor(data?: ILeague) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.updatedOn = _data["updatedOn"] ? new Date(_data["updatedOn"].toString()) : <any>undefined;
+            this.leagueID = _data["leagueID"];
+            this.queueType = _data["queueType"];
+            this.tier = _data["tier"];
+            this.rank = _data["rank"];
+            this.summonerID = _data["summonerID"];
+            this.summonerName = _data["summonerName"];
+            this.leaguePoints = _data["leaguePoints"];
+            this.wins = _data["wins"];
+            this.losses = _data["losses"];
+        }
+    }
+
+    static fromJS(data: any): League {
+        data = typeof data === 'object' ? data : {};
+        let result = new League();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>undefined;
+        data["updatedOn"] = this.updatedOn ? this.updatedOn.toISOString() : <any>undefined;
+        data["leagueID"] = this.leagueID;
+        data["queueType"] = this.queueType;
+        data["tier"] = this.tier;
+        data["rank"] = this.rank;
+        data["summonerID"] = this.summonerID;
+        data["summonerName"] = this.summonerName;
+        data["leaguePoints"] = this.leaguePoints;
+        data["wins"] = this.wins;
+        data["losses"] = this.losses;
+        return data; 
+    }
+}
+
+export interface ILeague {
+    id?: string | undefined;
+    createdAt?: Date;
+    updatedOn?: Date;
+    leagueID?: string | undefined;
+    queueType?: QueueType;
+    tier?: Tier;
+    rank?: Rank;
+    summonerID?: string | undefined;
+    summonerName?: string | undefined;
+    leaguePoints?: number;
+    wins?: number;
+    losses?: number;
+}
+
+export enum QueueType {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+}
+
+export enum Rank {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
 }
 
 export class Summoner implements ISummoner {
     id?: string | undefined;
-    readonly createdAt?: Date;
+    createdAt?: Date;
     updatedOn?: Date;
     summonerID?: string | undefined;
     accountID?: string | undefined;
@@ -111,7 +327,7 @@ export class Summoner implements ISummoner {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            (<any>this).createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>undefined;
             this.updatedOn = _data["updatedOn"] ? new Date(_data["updatedOn"].toString()) : <any>undefined;
             this.summonerID = _data["summonerID"];
             this.accountID = _data["accountID"];
@@ -205,6 +421,175 @@ export interface ISummonerApiResponse {
     message?: string | undefined;
     itemCount?: number;
     result?: Summoner;
+}
+
+export class SummonerLeagues implements ISummonerLeagues {
+    summoner?: Summoner;
+    historicLeagues?: League[] | undefined;
+
+    constructor(data?: ISummonerLeagues) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.summoner = _data["summoner"] ? Summoner.fromJS(_data["summoner"]) : <any>undefined;
+            if (Array.isArray(_data["historicLeagues"])) {
+                this.historicLeagues = [] as any;
+                for (let item of _data["historicLeagues"])
+                    this.historicLeagues!.push(League.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SummonerLeagues {
+        data = typeof data === 'object' ? data : {};
+        let result = new SummonerLeagues();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["summoner"] = this.summoner ? this.summoner.toJSON() : <any>undefined;
+        if (Array.isArray(this.historicLeagues)) {
+            data["historicLeagues"] = [];
+            for (let item of this.historicLeagues)
+                data["historicLeagues"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISummonerLeagues {
+    summoner?: Summoner;
+    historicLeagues?: League[] | undefined;
+}
+
+export class SummonerLeaguesListApiResponse implements ISummonerLeaguesListApiResponse {
+    httpStatusCode?: number;
+    message?: string | undefined;
+    itemCount?: number;
+    result?: SummonerLeagues[] | undefined;
+
+    constructor(data?: ISummonerLeaguesListApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.httpStatusCode = _data["httpStatusCode"];
+            this.message = _data["message"];
+            this.itemCount = _data["itemCount"];
+            if (Array.isArray(_data["result"])) {
+                this.result = [] as any;
+                for (let item of _data["result"])
+                    this.result!.push(SummonerLeagues.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SummonerLeaguesListApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SummonerLeaguesListApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["httpStatusCode"] = this.httpStatusCode;
+        data["message"] = this.message;
+        data["itemCount"] = this.itemCount;
+        if (Array.isArray(this.result)) {
+            data["result"] = [];
+            for (let item of this.result)
+                data["result"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISummonerLeaguesListApiResponse {
+    httpStatusCode?: number;
+    message?: string | undefined;
+    itemCount?: number;
+    result?: SummonerLeagues[] | undefined;
+}
+
+export class SummonerListApiResponse implements ISummonerListApiResponse {
+    httpStatusCode?: number;
+    message?: string | undefined;
+    itemCount?: number;
+    result?: Summoner[] | undefined;
+
+    constructor(data?: ISummonerListApiResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.httpStatusCode = _data["httpStatusCode"];
+            this.message = _data["message"];
+            this.itemCount = _data["itemCount"];
+            if (Array.isArray(_data["result"])) {
+                this.result = [] as any;
+                for (let item of _data["result"])
+                    this.result!.push(Summoner.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SummonerListApiResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new SummonerListApiResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["httpStatusCode"] = this.httpStatusCode;
+        data["message"] = this.message;
+        data["itemCount"] = this.itemCount;
+        if (Array.isArray(this.result)) {
+            data["result"] = [];
+            for (let item of this.result)
+                data["result"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISummonerListApiResponse {
+    httpStatusCode?: number;
+    message?: string | undefined;
+    itemCount?: number;
+    result?: Summoner[] | undefined;
+}
+
+export enum Tier {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
+    _5 = 5,
+    _6 = 6,
 }
 
 export class ApiException extends Error {

@@ -42,10 +42,178 @@
           }
         }
       }
+    },
+    "/Summoner/getAllSummoners": {
+      "get": {
+        "tags": [
+          "Summoner"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Summoner/getAllSummonersLeagues": {
+      "get": {
+        "tags": [
+          "Summoner"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerLeaguesListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerLeaguesListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerLeaguesListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Summoner/updateAllSummonersLeagues": {
+      "get": {
+        "tags": [
+          "Summoner"
+        ],
+        "parameters": [
+          {
+            "name": "returnHistoricLeagues",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerLeaguesListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerLeaguesListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummonerLeaguesListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "League": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "leagueID": {
+            "type": "string",
+            "nullable": true
+          },
+          "queueType": {
+            "$ref": "#/components/schemas/QueueType"
+          },
+          "tier": {
+            "$ref": "#/components/schemas/Tier"
+          },
+          "rank": {
+            "$ref": "#/components/schemas/Rank"
+          },
+          "summonerID": {
+            "type": "string",
+            "nullable": true
+          },
+          "summonerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "leaguePoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "wins": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "losses": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueueType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Rank": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "Summoner": {
         "type": "object",
         "properties": {
@@ -112,6 +280,84 @@
           }
         },
         "additionalProperties": false
+      },
+      "SummonerLeagues": {
+        "type": "object",
+        "properties": {
+          "summoner": {
+            "$ref": "#/components/schemas/Summoner"
+          },
+          "historicLeagues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/League"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummonerLeaguesListApiResponse": {
+        "type": "object",
+        "properties": {
+          "httpStatusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummonerLeagues"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SummonerListApiResponse": {
+        "type": "object",
+        "properties": {
+          "httpStatusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Summoner"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Tier": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
       }
     }
   }

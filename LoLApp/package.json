@@ -9,12 +9,14 @@
   },
   "dependencies": {
     "@types/node": "^16.11.7",
+    "chart.js": "^3.6.0",
     "core-js": "^3.19.1",
     "jest": "^27.3.1",
     "jest-editor-support": "^30.0.2",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.6",
-    "vue-property-decorator": "^9.1.2"
+    "vue-property-decorator": "^9.1.2",
+    "vuetify": "^2.4.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.18.0",
@@ -27,8 +29,12 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "sass": "~1.32.0",
+    "sass-loader": "^10.0.0",
     "typescript": "~4.1.5",
-    "vue-template-compiler": "^2.6.11"
+    "vue-cli-plugin-vuetify": "^2.4.4",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.0"
   },
   "eslintConfig": {
     "root": true,

@@ -74,7 +74,7 @@ namespace lolappAPI.Repository
 
             return summoner;
         }
-        private async Task<List<Summoner>> GetAllSummonersFromDB()
+        public async Task<List<Summoner>> GetAllSummonersFromDB()
         {
             DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 

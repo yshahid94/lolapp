@@ -52,11 +52,23 @@ namespace lolappAPI.Repository.Tests
         }
 
         [TestMethod()]
-        public void UpdateAllSummonersLeaguesTest()
+        public async Task UpdateAllSummonersLeaguesTest()
         {
             SummonerRepository repository = new SummonerRepository(_config);
-            List<SummonerLeagues> summonerLeagueList = repository.UpdateAllSummonersLeagues();
-            Assert.Fail();
+            //List<SummonerLeagues> summonerLeagueList = await repository.UpdateAllSummonersLeagues();
+            //Assert.Fail();
+
+            //List<SummonerLeagues> summonerLeagueList = new List<SummonerLeagues>();
+            //Task.Run(async () =>
+            //{
+            //    summonerLeagueList = await repository.UpdateAllSummonersLeagues();
+            //});
+
+            var task = repository.UpdateAllSummonersLeagues();
+            task.Wait();
+            var response = task.Result;
+
+            Assert.IsNotNull(response);
         }
     }
 }

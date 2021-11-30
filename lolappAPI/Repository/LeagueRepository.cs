@@ -1,5 +1,7 @@
 ﻿using lolappAPI.Repository.Interfaces;
 using lolappAPI.Types;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace lolappAPI.Repository
 {
