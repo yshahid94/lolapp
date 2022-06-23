@@ -5,14 +5,22 @@ namespace lolappAPI.Repository
 {
     public class SummonerRepository : ISummonerRepository
     {
-        private IConfiguration _configuration;
+        private IConfiguration _config;
         RiotRestAPI _restAPI = null;
         LeagueRepository _leagueRepository = null;
         public SummonerRepository(IConfiguration config)
         {
-            _configuration = config;
+            _config = config;
             _leagueRepository = new LeagueRepository(config);
         }
+        /// <summary>
+        /// Gets the list of historic leagues for summoners under lolapp.summoners.
+        /// </summary>
+        /// <remarks>
+        /// First gets the list of summoners under lolapp.summoners
+        /// then grabs all the historic leagues for those summoners and returns them
+        /// </remarks>
+        /// <returns>List of all historic leagues for all summoners</returns>
         public async Task<List<SummonerLeagues>> GetAllSummonersLeagues()
         {
             //Get all summoners from db
@@ -22,6 +30,15 @@ namespace lolappAPI.Repository
             
             return summonerLeaguesList;
         }
+        /// <summary>
+        /// Grabs the current league snapshot for all summoners under lolapp.summoners and stores them in db.
+        /// </summary>
+        /// <remarks>
+        /// First gets the list of summoners under lolapp.summoners
+        /// gets all of their current league snapshots from RiotAPI
+        /// then returns them with or without the historic leagues on the db depending on the param
+        /// </remarks>
+        /// <returns>List of all historic leagues for all summoners</returns>
         public async Task<List<SummonerLeagues>> UpdateAllSummonersLeagues(bool returnHistoricLeagues = false)
         {
             //Get all summoners from db
@@ -35,6 +52,15 @@ namespace lolappAPI.Repository
             }
             return summonerLeaguesList;
         }
+        /// <summary>
+        /// Grabs the summoners 
+        /// </summary>
+        /// <remarks>
+        /// First gets the list of summoners under lolapp.summoners
+        /// gets all of their current league snapshots from RiotAPI
+        /// then returns them with or without the historic leagues on the db depending on the param
+        /// </remarks>
+        /// <returns>List of all historic leagues for all summoners</returns>
         private async Task<Summoner> GetSummonerByNameFromRiot(string name)
         {
             List<RiotInboundMessage> responses = new List<RiotInboundMessage>();
@@ -42,7 +68,7 @@ namespace lolappAPI.Repository
             GetSummonerByNameOutboundMessage req = new GetSummonerByNameOutboundMessage();
             req.Name = name;
 
-            _restAPI = new RiotRestAPI();
+            _restAPI = new RiotRestAPI(_config);
             
             RiotInboundMessage response = (RiotInboundMessage)RiotRestAPI.SendMessage(req, _restAPI);
 
@@ -68,7 +94,7 @@ namespace lolappAPI.Repository
 
         private async Task<Summoner> GetSummonerByNameFromDB(string name)
         {
-            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
             Summoner summoner = await dar.FindOneAsync(filter => filter.Name == name);
 
@@ -76,7 +102,7 @@ namespace lolappAPI.Repository
         }
         public async Task<List<Summoner>> GetAllSummonersFromDB()
         {
-            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
             IEnumerable<Summoner> summoners = await dar.FilterByAsync(filter => true);
 
@@ -84,7 +110,7 @@ namespace lolappAPI.Repository
         }
         private async Task<Summoner> InsertSummonerToDB(Summoner summoner)
         {
-            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
             await dar.InsertOneAsync(summoner);
 
@@ -92,7 +118,7 @@ namespace lolappAPI.Repository
         }
         private async Task<Summoner> UpdateDBSummoner(Summoner summoner)
         {
-            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>());
+            DataAccessRepository<Summoner> dar = new DataAccessRepository<Summoner>(_config.GetSection("MongoDbSettings").Get<MongoDbSettings>());
 
             dar.ReplaceOne(summoner);
 

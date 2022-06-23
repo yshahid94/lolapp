@@ -10,14 +10,41 @@ using System.Threading.Tasks;
 using lolappAPI.Types;
 using Newtonsoft.Json;
 using lolappAPI.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace lolappAPITests.Repository
 {
     [TestClass()]
     public class RiotAPIRepositoryTests
     {
-        private const string URL = "https://euw1.api.riotgames.com/";
-        private string urlParameters = "?api_key=123";
+
+        private IServiceCollection _services;
+        private IConfiguration _config;
+        private RiotAPISettings _riotAPISettings;
+
+        public RiotAPIRepositoryTests()
+        {
+            _services = new ServiceCollection();
+
+            _services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDbSettings"));
+            _services.AddSingleton<IConfiguration>(Configuration);
+
+            _riotAPISettings = _config.GetSection("RiotAPISettings").Get<RiotAPISettings>();
+        }
+        public IConfiguration Configuration
+        {
+            get
+            {
+                if (_config == null)
+                {
+                    var builder = new ConfigurationBuilder().AddJsonFile($"appsettings.Development.json", optional: false);
+                    _config = builder.Build();
+                }
+
+                return _config;
+            }
+        }
 
         [TestMethod("ss")]
         public void aa()
@@ -27,11 +54,11 @@ namespace lolappAPITests.Repository
             using (var client = new HttpClient())
             {
                 //Passing service base url
-                client.BaseAddress = new Uri("https://euw1.api.riotgames.com/");
+                client.BaseAddress = new Uri(_riotAPISettings.URLBase);
                 client.DefaultRequestHeaders.Clear();
                 //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("X-Riot-Token", "RGAPI-9daa7b6e-d732-4f7f-9c54-8a1dd3b020ad");
+                client.DefaultRequestHeaders.Add("X-Riot-Token", _riotAPISettings.APIToken);
                 //Sending request to find web api REST service resource GetAllEmployees using HttpClient
                 //HttpResponseMessage Res = await client.GetAsync("lol/summoner/v4/summoners/by-name/Yassin");
                 Task.Run(async () =>
@@ -67,7 +94,7 @@ namespace lolappAPITests.Repository
             GetSummonerByNameOutboundMessage req = new GetSummonerByNameOutboundMessage();
             req.Name = "Yassin";
 
-            var restAPI = new RiotRestAPI();
+            var restAPI = new RiotRestAPI(_config);
 
             var response = RiotRestAPI.SendMessage(req, restAPI);
         }

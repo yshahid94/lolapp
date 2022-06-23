@@ -64,9 +64,7 @@ namespace lolappAPI.Repository.Tests
             //    summonerLeagueList = await repository.UpdateAllSummonersLeagues();
             //});
 
-            var task = repository.UpdateAllSummonersLeagues();
-            task.Wait();
-            var response = task.Result;
+            var response = await repository.UpdateAllSummonersLeagues();
 
             Assert.IsNotNull(response);
         }

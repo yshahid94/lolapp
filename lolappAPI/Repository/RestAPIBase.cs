@@ -10,6 +10,7 @@ namespace lolappAPI.Repository
 {
     public abstract class RestAPIBase : IRestAPI
     {
+        protected IConfiguration _config;
         /// <summary>
         /// The type into which the successful response will deserialise. This will be used in DeserialiseResponse.
         /// </summary>
@@ -25,7 +26,7 @@ namespace lolappAPI.Repository
         /// <summary>
         /// Initialise the template here
         /// </summary>
-        public abstract void Setup();
+        public abstract void Setup(IConfiguration config);
 
         /// <summary>
         /// Deserialise the error response in whatever format the messages come in
@@ -68,9 +69,10 @@ namespace lolappAPI.Repository
         public string RawResponse { get; set; }
         public string Error { get; set; }
 
-        public RestAPIBase()
+        public RestAPIBase(IConfiguration config)
         {
-            Setup();
+            _config = config;
+            Setup(config);
         }
 
         public T Post<T>(object request)

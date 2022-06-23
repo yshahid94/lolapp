@@ -5,15 +5,21 @@ namespace lolappAPI.Repository
 {
     public class RiotRestAPI : RestAPIBase
     {
-        public override void Setup()
+        public RiotRestAPI(IConfiguration config): base(config)
         {
+        }
+        public override void Setup(IConfiguration config)
+        {
+            RiotAPISettings riotAPISettings = _config.GetSection("RiotAPISettings").Get<RiotAPISettings>();
             Template = new RestTemplate()
             {
                 ContentType = "application/json",
                 ApplyJSONSerialisation = false,
-                URLBase = "https://euw1.api.riotgames.com/",
+                URLBase = riotAPISettings.URLBase,
                 Headers = new List<KeyValuePair<string, string>>()
             };
+
+            this.InsertHeader("X-Riot-Token", riotAPISettings.APIToken);
         }
 
         public override object DeserialiseError(string response, System.Net.HttpStatusCode httpStatusCode, string errorMessage)
@@ -32,9 +38,6 @@ namespace lolappAPI.Repository
             ResponseType = responseType;
             Template.URLBase = urlBase;
 
-            //Need to generate token here
-            this.InsertHeader("X-Riot-Token", "RGAPI-0a96ec56-c852-45f9-a83d-e420b3bf0ae4");
-
             return Post<T>(request);
         }
 
@@ -43,9 +46,6 @@ namespace lolappAPI.Repository
             OrderURL = orderURL;
             ResponseType = messageType;
             Template.URLBase = urlBase;
-
-            //Need to generate token here
-            this.InsertHeader("X-Riot-Token", "RGAPI-0a96ec56-c852-45f9-a83d-e420b3bf0ae4");
 
             return Get<T>(parameters);
         }
